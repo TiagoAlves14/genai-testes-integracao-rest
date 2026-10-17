@@ -1,61 +1,56 @@
-# Relatório de execução e avaliação — NexoPsi / Unidade III
+# Relatório auditado — Unidade III / NexoPsi
 
-**Data da avaliação:** 2026-10-17  
-**Aplicação de origem:** `TiagoAlves14/NexoPsi` (privado)  
-**Fluxo:** `POST /sessions/{session_id}/complete` → Agenda → Financeiro → PostgreSQL.  
-**Branch de experimento (privada):** `test/genai-integration-unit3`  
-**PR privado de testes:** https://github.com/TiagoAlves14/NexoPsi/pull/1  
-**Execução do CI:** https://github.com/TiagoAlves14/NexoPsi/actions/runs/38999718073  
-**Commit executado:** `0bb4de71c68992b487c191e982f6560eb51626f3`
+**Data da auditoria:** 17/10/2026.  
+**Aplicação de origem:** `TiagoAlves14/NexoPsi` (privado), branch `test/genai-integration-unit3`, PR privado [#1](https://github.com/TiagoAlves14/NexoPsi/pull/1).  
+**Execução comprovada:** [GitHub Actions #39000265874](https://github.com/TiagoAlves14/NexoPsi/actions/runs/39000265874); commit `aea809ed8a9d1166a28ad6b57eeb74c39252527f`.
 
-## Resumo objetivo
+## Matriz de atendimento ao enunciado
 
-- **12 candidatos** produzidos e documentados pela LLM: 5 funcionais (F01–F05) + 7 estruturais (E01–E07).
-- **5 verificações estáticas** do contrato OpenAPI real: todas confirmaram a existência das operações, restrições e respostas utilizadas pelos casos F01–F05. **Não são requisições HTTP executadas**.
-- **6 testes de integração novos executados:** 6 aprovados, 0 falhas no Pytest.
-- **Suíte Pytest completa da execução:** `114 passed, 2 warnings in 15.66s`. Esses 114 incluem os 6 novos testes e 108 testes preexistentes.
-- O ambiente foi o GitHub Actions do projeto privado, com `pytest -v`, PostgreSQL por Testcontainers e a role de aplicação com RLS.
-- **Job lint:** falhou na execução consultada com 198 achados globais reportados; o arquivo novo não aparece nos apontamentos dessa última execução. A suíte Pytest aprovada não significa pipeline completo aprovado.
+| Solicitação | Resultado e evidência |
+| --- | --- |
+| Definir cenário de integração | Conclusão de sessão: `POST /sessions/{session_id}/complete` integra Scheduling, Billing e PostgreSQL |
+| Definir dois prompts diferentes | [Prompt funcional/OpenAPI](../prompts/01-funcional.md) e [Prompt estrutural/OpenAPI + código](../prompts/02-estrutural.md) |
+| Experimentar com LLM e registrar os casos | GPT-6 gerou [5 casos funcionais](../tests/casos-funcionais.json) e [7 estruturais](../tests/casos-estruturais.json), todos identificados e rastreáveis |
+| Registrar os resultados em GitHub | Artefatos publicados neste repositório e testes executáveis preservados no PR privado |
+| Comparar diversidade e qualidade | [Análise crítica](analise.md), incluindo limitação de comparabilidade das entradas |
+| Registrar ajustes dos prompts | Exigência de rastreabilidade, limites documentados, cenários negativos, dados sintéticos e restrição a resultados comprovados |
 
-## Resultado por cenário — código de integração REAL
+## Execução real
 
-| Caso derivado | Procedimento efetivamente executado | Resultado |
-|---|---|---|
-| E01 | Concluir sessão AGENDADA; consultar sessão, cobrança ABERTA e auditoria no Postgres | **PASSOU** |
-| E02 | Concluir sessão CONFIRMADA; consultar sessão, cobrança ABERTA e auditoria no Postgres | **PASSOU** |
-| E03 | Repetir conclusão de sessão já REALIZADA; verificar HTTPException 409 e ausência de cobrança duplicada | **PASSOU** |
-| E04 | Concluir UUID de sessão inexistente; verificar HTTPException 404 | **PASSOU** |
-| E06 | Tenant A tenta concluir sessão de tenant B; validar 404, sessão de B inalterada e nenhuma cobrança | **PASSOU** |
-| E07 | Induzir falha no serviço Billing após atualização da sessão e verificar rollback, ausência de cobrança e auditoria parcial | **PASSOU** |
+**Comando executado pelo job `test` no CI:** `pytest -v`, com ambiente Python 3.12, PostgreSQL 16 via Testcontainers, migrações Alembic e role de aplicação sem bypass de RLS. 
 
-E05 (RBAC sem permissão) **não foi implementado nesta bateria**. O controle RBAC possui testes preexistentes no projeto, mas não se contabiliza isso como execução do novo E05.
+**Resultado real do Pytest:** `120 passed, 2 warnings in 14.15s`. São 12 testes novos + 108 preexistentes; **12/12 novos aprovados**.
 
-Os testes invocam o **handler Python diretamente** e executam as dependências reais de aplicação e persistência; substituem apenas a criação da sessão de banco pelo fixture de PostgreSQL do Testcontainers. Não atravessam um servidor HTTP, gateway ou frontend; por isso, são testes de integração **entre componentes/serviços e banco**, não testes API end-to-end.
+| Caso | Escopo executado | Resultado |
+| --- | --- | --- |
+| F01 | HTTP 200 em conclusão de sessão acessível; dados persistidos | PASSOU |
+| F02 | HTTP 422 para UUID inválido no caminho | PASSOU |
+| F03 | HTTP 200 e campos obrigatórios do corpo `SessionOut` | PASSOU |
+| F04 | HTTP 422 por ausência de `from` em consulta de cobranças | PASSOU |
+| F05 | HTTP 422 com `page_size=201` quando o máximo é 200 | PASSOU |
+| E01 | Sessão AGENDADA → REALIZADA; criação de cobrança e auditoria no banco | PASSOU |
+| E02 | Sessão CONFIRMADA → REALIZADA; criação de cobrança e auditoria | PASSOU |
+| E03 | Repetição de conclusão rejeitada (HTTPException 409); sem cobrança duplicada | PASSOU |
+| E04 | Sessão inexistente rejeitada (HTTPException 404) | PASSOU |
+| E05 | Requisição HTTP sem permissão `session.complete` → 403 e estado inalterado | PASSOU |
+| E06 | Tentativa de acesso ao registro de outro tenant → 404; RLS protege registros | PASSOU |
+| E07 | Erro induzido no Billing provoca rollback da conclusão, sem cobrança nem auditoria parcial | PASSOU |
 
-## Resultado por cenário — validação estática de contrato
+Os cinco testes F e E05 usam **FastAPI TestClient** e atravessam as rotas HTTP reais com identidade sintética injetada; não exercitam autenticação real Cognito/JWT nem API Gateway. E01/E02/E03/E04/E06/E07 invocam o handler diretamente, utilizando serviços e PostgreSQL reais, sem servidor HTTP. São **testes de integração**, mas não uma bateria ponta a ponta da aplicação completa.
 
-| Caso | Verificação contra OpenAPI | Resultado |
-|---|---|---|
-| F01 | `POST /sessions/{session_id}/complete` possui resposta 200 e schema `SessionOut` | Confirmado |
-| F02 | `session_id` usa formato UUID e resposta 422 está especificada | Confirmado |
-| F03 | `SessionOut` declara `status` e `valor_aplicado_centavos` obrigatórios | Confirmado |
-| F04 | `GET /financeiro/cobrancas` exige `from` e documenta 422 | Confirmado |
-| F05 | `page_size` tem máximo 200 e 422 está documentado | Confirmado |
+## Qualidade da execução e limitações
 
-**Atenção:** nenhuma dessas cinco verificações executou a requisição HTTP correspondente; os casos F01–F05 permanecem `GERADO_NAO_EXECUTADO` na suíte de candidatos, pois somente suas premissas contratuais foram inspecionadas.
+- O job `test` do GitHub Actions foi **aprovado**; o job `openapi` também passou. 
+- O job `lint` do mesmo workflow **falhou**, com **198 apontamentos** globais reportados. Portanto, o **workflow geral não passou**. Não afirmar CI completamente verde.
+- Foram reportados **dois warnings** na suíte.
+- **Não existe medição de cobertura de linhas/branches ou mutação** neste experimento; não afirmar porcentagens.
+- O mock utilizado em E07 **injeta uma exceção controlada no ponto de integração com Billing**; sua evidência limita-se à reversão do estado após esse erro, sem testar falha posterior à gravação efetiva da cobrança.
+- Os 12 resultados são **apenas da execução que comprovadamente ocorreu**. Nenhum dado pessoal real, segredo, OpenAPI integral ou código-fonte privado foi incluído no repositório público.
 
-## Comparação crítica dos prompts
+## Comparação acadêmica
 
-O prompt funcional derivou entradas inválidas, schemas e respostas a partir de OpenAPI. O estrutural identificou transições e falhas internas no código, alcançando casos que o OpenAPI não documenta explicitamente, como resposta 409 e isolamento 404. Como a **informação disponibilizada à LLM foi diferente**, a comparação não mede isoladamente a superioridade de uma técnica de prompting.
+O Prompt 1 prioriza contrato, parâmetros, validação, equivalência e valores limite; o Prompt 2 prioriza transições, exceções, persistência, autorização, isolamento e atomicidade. A diferença entre resultados reflete **tanto o tipo de prompt quanto o contexto disponível** (o Prompt 2 recebeu código além do OpenAPI), de modo que **não há isolamento causal do efeito do estilo do prompt**. Quantidade de casos e taxa de execução aprovados não são substitutos de cobertura de decisões ou detecção de defeitos. É necessário julgamento humano.
 
-**Ajustes de instrução registrados:** rastreabilidade por arquivo/operação; separação entre documentação e implementação; proibição de resultados sem execução; exigência de fixtures com banco real; distinção entre handler direto, componente mockado e API de ponta a ponta.
+**Ajustes realizados:** rastreabilidade de cada expectativa à especificação/código; proibição de resposta ou comportamento inventado; seleção de cenário implementado; geração de fixtures sintéticas; distinção entre validação estática, execução HTTP e integração direta de componentes; adição de testes HTTP e RBAC após auditoria das lacunas; documentação explícita do lint falho.
 
-## Limitações e próximos passos
-
-1. Implementar testes HTTP com FastAPI TestClient, dados sintéticos e dependências de autenticação, para validar F01–F05 e E05 sem confundir testes de rota com contratos apenas estáticos.
-2. O caso E07 foi executado com falha controlada no Billing e assertivas de rollback; manter um teste adicional para falha que ocorre depois da inserção de cobrança, caso necessário.
-3. Gerar cobertura de linhas/ramos no Pytest para a suíte delimitada; **nenhuma porcentagem de cobertura foi medida**.
-4. Corrigir os 198 apontamentos de lint global em uma atividade separada (fora deste escopo), preservando a evidência de que o Pytest passou.
-5. O código de testes executável fica **somente no PR privado**; o repositório público contém os prompts, os cenários, a metodologia e este relatório, sem cópia de código privado.
-
-**Material acadêmico:** UFG/AKCIT, Unidades I, II e III, seções 3.1.1 e 3.5–3.7.
+**Referências:** Material didático UFG/AKCIT — Unidade II, §2.1 (partição de equivalência e análise de valor limite); Unidade III, §§3.1.1, 3.5–3.7 (prompts funcionais e estruturais, integração REST, revisão e avaliação da qualidade).
