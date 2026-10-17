@@ -1,0 +1,42 @@
+[
+  {
+    "id": "F01",
+    "cenario": "POST /sessions/{session_id}/complete",
+    "pre_condicoes_ou_entrada": "UUID válido e sessão acessível",
+    "resultado_esperado_proposto": "HTTP 200 com SessionOut",
+    "referencia": "OpenAPI, POST complete: 200",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "F02",
+    "cenario": "POST /sessions/{session_id}/complete",
+    "pre_condicoes_ou_entrada": "session_id inválido",
+    "resultado_esperado_proposto": "HTTP 422",
+    "referencia": "OpenAPI: UUID e resposta 422",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "F03",
+    "cenario": "POST /sessions/{session_id}/complete",
+    "pre_condicoes_ou_entrada": "resposta de sucesso",
+    "resultado_esperado_proposto": "campos e tipos obrigatórios de SessionOut",
+    "referencia": "OpenAPI: SessionOut",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "F04",
+    "cenario": "GET /financeiro/cobrancas",
+    "pre_condicoes_ou_entrada": "sem from, com to",
+    "resultado_esperado_proposto": "HTTP 422",
+    "referencia": "OpenAPI: from obrigatório",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "F05",
+    "cenario": "GET /financeiro/cobrancas",
+    "pre_condicoes_ou_entrada": "page_size 201 e datas válidas",
+    "resultado_esperado_proposto": "HTTP 422",
+    "referencia": "OpenAPI: limite superior 200",
+    "status": "GERADO_NAO_EXECUTADO"
+  }
+]
