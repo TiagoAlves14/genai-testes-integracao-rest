@@ -10,7 +10,7 @@ Os cenários, prompts, resultados e limitações serão documentados aqui. Resul
 
 - **12 casos candidatos** gerados pela LLM: 5 funcionais e 7 estruturais.
 - **5 verificações estáticas** do contrato OpenAPI: confirmadas (não são execução HTTP).
-- **5 testes novos de integração com PostgreSQL real: 5 aprovados** no GitHub Actions do NexoPsi. Suíte total: **113 aprovados**, 2 warnings, 17,38 s.
+- **6 testes novos de integração com PostgreSQL real: 6 aprovados** no GitHub Actions do NexoPsi. Suíte total: **114 aprovados**, 2 warnings, 15,66 s.
 - O job de lint da execução consultada falhou; não confundir Pytest aprovado com pipeline completo aprovado.
 
 Consulte o [relatório de execução, limitações e evidências](docs/relatorio-validacao.md). Os testes executáveis ficaram em um PR **privado** do NexoPsi; este repositório público preserva o código original.
