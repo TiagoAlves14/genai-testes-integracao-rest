@@ -1,0 +1,58 @@
+[
+  {
+    "id": "E01",
+    "cenario": "Conclusão AGENDADA",
+    "pre_condicoes_ou_entrada": "Sessão AGENDADA; tenant autorizado",
+    "resultado_esperado_proposto": "Sessão REALIZADA, cobrança ABERTA e auditoria",
+    "referencia": "scheduling/router.py; billing/service.py",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "E02",
+    "cenario": "Conclusão CONFIRMADA",
+    "pre_condicoes_ou_entrada": "Sessão CONFIRMADA; tenant autorizado",
+    "resultado_esperado_proposto": "Sessão REALIZADA e cobrança vinculada",
+    "referencia": "scheduling/service.py FSM; router.py",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "E03",
+    "cenario": "Transição inválida",
+    "pre_condicoes_ou_entrada": "Sessão já REALIZADA",
+    "resultado_esperado_proposto": "HTTP 409 sem duplicar cobrança",
+    "referencia": "scheduling/service.py",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "E04",
+    "cenario": "Sessão inexistente",
+    "pre_condicoes_ou_entrada": "UUID válido, sem sessão no tenant",
+    "resultado_esperado_proposto": "HTTP 404 sem alterações",
+    "referencia": "scheduling/repository.py",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "E05",
+    "cenario": "Permissão insuficiente",
+    "pre_condicoes_ou_entrada": "Identidade sem session.complete",
+    "resultado_esperado_proposto": "HTTP 403 sem alterações",
+    "referencia": "core/rbac.py",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "E06",
+    "cenario": "Isolamento por tenant",
+    "pre_condicoes_ou_entrada": "Usuário tenant A acessa sessão tenant B",
+    "resultado_esperado_proposto": "HTTP 404 sem alterar dados de B",
+    "referencia": "core/db.py RLS",
+    "status": "GERADO_NAO_EXECUTADO"
+  },
+  {
+    "id": "E07",
+    "cenario": "Falha de persistência financeira",
+    "pre_condicoes_ou_entrada": "Erro controlado no Billing",
+    "resultado_esperado_proposto": "Rollback da conclusão, cobrança e auditoria",
+    "referencia": "tenant_session e on_session_completed",
+    "status": "GERADO_NAO_EXECUTADO"
+  }
+]
