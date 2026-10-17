@@ -5,7 +5,10 @@
     "pre_condicoes_ou_entrada": "UUID válido e sessão acessível",
     "resultado_esperado_proposto": "HTTP 200 com SessionOut",
     "referencia": "OpenAPI, POST complete: 200",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/39000265874",
+    "modalidade": "HTTP_FastAPI_TestClient",
+    "observacao": "Rota real FastAPI; identidade sintética injetada como dependência; não testa Cognito/JWT nem gateway."
   },
   {
     "id": "F02",
@@ -13,7 +16,10 @@
     "pre_condicoes_ou_entrada": "session_id inválido",
     "resultado_esperado_proposto": "HTTP 422",
     "referencia": "OpenAPI: UUID e resposta 422",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/39000265874",
+    "modalidade": "HTTP_FastAPI_TestClient",
+    "observacao": "Rota real FastAPI; identidade sintética injetada como dependência; não testa Cognito/JWT nem gateway."
   },
   {
     "id": "F03",
@@ -21,7 +27,10 @@
     "pre_condicoes_ou_entrada": "resposta de sucesso",
     "resultado_esperado_proposto": "campos e tipos obrigatórios de SessionOut",
     "referencia": "OpenAPI: SessionOut",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/39000265874",
+    "modalidade": "HTTP_FastAPI_TestClient",
+    "observacao": "Rota real FastAPI; identidade sintética injetada como dependência; não testa Cognito/JWT nem gateway."
   },
   {
     "id": "F04",
@@ -29,7 +38,10 @@
     "pre_condicoes_ou_entrada": "sem from, com to",
     "resultado_esperado_proposto": "HTTP 422",
     "referencia": "OpenAPI: from obrigatório",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/39000265874",
+    "modalidade": "HTTP_FastAPI_TestClient",
+    "observacao": "Rota real FastAPI; identidade sintética injetada como dependência; não testa Cognito/JWT nem gateway."
   },
   {
     "id": "F05",
@@ -37,6 +49,9 @@
     "pre_condicoes_ou_entrada": "page_size 201 e datas válidas",
     "resultado_esperado_proposto": "HTTP 422",
     "referencia": "OpenAPI: limite superior 200",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/39000265874",
+    "modalidade": "HTTP_FastAPI_TestClient",
+    "observacao": "Rota real FastAPI; identidade sintética injetada como dependência; não testa Cognito/JWT nem gateway."
   }
 ]
