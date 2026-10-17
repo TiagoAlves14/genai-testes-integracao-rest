@@ -8,7 +8,7 @@
 
 **Ajustes:** inclusão obrigatória de rastreabilidade, distinção entre contrato e implementação e proibição de resultados inventados. 
 
-**Evidência:** casos JSON e relatório de validação. Os casos gerados não comprovam, por si, execução; não afirmar cobertura ou aprovação sem os registros reais.
+**Evidência de execução:** seis testes estruturais novos (E01, E02, E03, E04, E06 e E07) passaram com PostgreSQL/Testcontainers no GitHub Actions do NexoPsi; a suíte completa registrou 114 aprovados, 2 avisos e 15,66 s. Os cinco casos funcionais foram verificados estaticamente no contrato, mas ainda não executados por HTTP. O job de lint geral falhou com 198 apontamentos; não houve medição de cobertura de código. Relatório: https://github.com/TiagoAlves14/genai-testes-integracao-rest/blob/main/docs/relatorio-validacao.md .
 
 **Repositório:** https://github.com/TiagoAlves14/genai-testes-integracao-rest
 
