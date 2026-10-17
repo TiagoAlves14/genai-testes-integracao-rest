@@ -5,7 +5,9 @@
     "pre_condicoes_ou_entrada": "Sessão AGENDADA; tenant autorizado",
     "resultado_esperado_proposto": "Sessão REALIZADA, cobrança ABERTA e auditoria",
     "referencia": "scheduling/router.py; billing/service.py",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO_INTEGRACAO_COMPONENTES_DB",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/38999718073",
+    "observacao": "Handler chamado diretamente, com serviços e PostgreSQL reais; sem servidor HTTP."
   },
   {
     "id": "E02",
@@ -13,7 +15,9 @@
     "pre_condicoes_ou_entrada": "Sessão CONFIRMADA; tenant autorizado",
     "resultado_esperado_proposto": "Sessão REALIZADA e cobrança vinculada",
     "referencia": "scheduling/service.py FSM; router.py",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO_INTEGRACAO_COMPONENTES_DB",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/38999718073",
+    "observacao": "Handler chamado diretamente, com serviços e PostgreSQL reais; sem servidor HTTP."
   },
   {
     "id": "E03",
@@ -21,7 +25,9 @@
     "pre_condicoes_ou_entrada": "Sessão já REALIZADA",
     "resultado_esperado_proposto": "HTTP 409 sem duplicar cobrança",
     "referencia": "scheduling/service.py",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO_INTEGRACAO_COMPONENTES_DB",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/38999718073",
+    "observacao": "Handler chamado diretamente, com serviços e PostgreSQL reais; sem servidor HTTP."
   },
   {
     "id": "E04",
@@ -29,7 +35,9 @@
     "pre_condicoes_ou_entrada": "UUID válido, sem sessão no tenant",
     "resultado_esperado_proposto": "HTTP 404 sem alterações",
     "referencia": "scheduling/repository.py",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO_INTEGRACAO_COMPONENTES_DB",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/38999718073",
+    "observacao": "Handler chamado diretamente, com serviços e PostgreSQL reais; sem servidor HTTP."
   },
   {
     "id": "E05",
@@ -45,7 +53,9 @@
     "pre_condicoes_ou_entrada": "Usuário tenant A acessa sessão tenant B",
     "resultado_esperado_proposto": "HTTP 404 sem alterar dados de B",
     "referencia": "core/db.py RLS",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO_INTEGRACAO_COMPONENTES_DB",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/38999718073",
+    "observacao": "Handler chamado diretamente, com serviços e PostgreSQL reais; sem servidor HTTP."
   },
   {
     "id": "E07",
@@ -53,6 +63,8 @@
     "pre_condicoes_ou_entrada": "Erro controlado no Billing",
     "resultado_esperado_proposto": "Rollback da conclusão, cobrança e auditoria",
     "referencia": "tenant_session e on_session_completed",
-    "status": "GERADO_NAO_EXECUTADO"
+    "status": "EXECUTADO_APROVADO_INTEGRACAO_COMPONENTES_DB",
+    "evidencia": "https://github.com/TiagoAlves14/NexoPsi/actions/runs/38999718073",
+    "observacao": "Handler chamado diretamente, com serviços e PostgreSQL reais; sem servidor HTTP."
   }
 ]
