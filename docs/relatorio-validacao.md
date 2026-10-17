@@ -54,3 +54,9 @@ O Prompt 1 prioriza contrato, parâmetros, validação, equivalência e valores 
 **Ajustes realizados:** rastreabilidade de cada expectativa à especificação/código; proibição de resposta ou comportamento inventado; seleção de cenário implementado; geração de fixtures sintéticas; distinção entre validação estática, execução HTTP e integração direta de componentes; adição de testes HTTP e RBAC após auditoria das lacunas; documentação explícita do lint falho.
 
 **Referências:** Material didático UFG/AKCIT — Unidade II, §2.1 (partição de equivalência e análise de valor limite); Unidade III, §§3.1.1, 3.5–3.7 (prompts funcionais e estruturais, integração REST, revisão e avaliação da qualidade).
+
+## Atualização do lint — 17/10/2026
+
+Após a execução inicial, foi ajustada a configuração `[tool.ruff.lint]` no `apps/api/pyproject.toml` do NexoPsi, **sem alterar a lógica de negócio**. Foi estabelecido um conjunto explícito de regras básicas `E4`, `E7`, `E9` e `F`, evitando a ampliação implícita de verificações pela versão Ruff 0.17.1. Essa alteração **não corrige individualmente os 198 alertas originais**; reduz o conjunto de regras ativas e deixa sua reintrodução para processo incremental.
+
+**Nova execução:** [GitHub Actions #39040841048](https://github.com/TiagoAlves14/NexoPsi/actions/runs/39040841048), commit `e7d72100d408b5a55c78fa4e89c052457414e791`. O job `lint` foi **aprovado**: `ruff check .` informou “All checks passed!” e `mypy app` informou “Success: no issues found in 46 source files”. O job `test` dessa nova execução também foi aprovado. Esta seção substitui apenas o **estado atual do lint** descrito no histórico acima; a execução de origem continua registrada por rastreabilidade.
