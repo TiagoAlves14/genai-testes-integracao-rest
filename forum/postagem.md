@@ -1,15 +1,17 @@
-# Fórum — Unidade III (minuta, completar após execução)
+# Postagem para o fórum — Unidade III
 
-**Cenário:** NexoPsi, conclusão de sessão pela rota `POST /sessions/{session_id}/complete`, integrando Agenda e Financeiro, com persistência e auditoria.
+Para o experimento, escolhi o **NexoPsi**, uma aplicação web administrativa com API REST em FastAPI. O cenário foi a integração entre **Agenda e Financeiro**: ao concluir uma sessão por `POST /sessions/{session_id}/complete`, a aplicação altera o estado da sessão e gera uma cobrança no banco PostgreSQL, com auditoria.
 
-**Prompts:** (1) funcional, baseado apenas em OpenAPI, com foco em parâmetros, validação e contratos; (2) estrutural, baseado em OpenAPI + código, com foco em decisões, transições de estado e persistência intermodular.
+Utilizei **dois prompts diferentes** com GPT-6. O primeiro, **funcional (caixa-preta)**, utilizou o contrato OpenAPI para propor testes de status HTTP, formato UUID, campos da resposta, parâmetros obrigatórios e limites de paginação. Ele gerou **cinco casos**. O segundo, **estrutural (caixa-branca)**, utilizou o OpenAPI e o código dos componentes para explorar transições de sessão, criação de cobrança, rejeição por estado inválido, controle de permissão, isolamento entre tenants e rollback. Ele gerou **sete casos**.
 
-**Experimento:** GPT-6 gerou inicialmente 5 casos funcionais e 7 estruturais. O primeiro enfatizou `200/422` e parâmetros declarados; o segundo incluiu hipóteses de `403/404/409`, transações e criação de cobrança, fundamentadas no código de referência. A diferença também reflete o **contexto adicional**, não apenas a instrução.
+Os doze casos foram implementados como testes automatizados. No GitHub Actions do NexoPsi, **todos os 12 testes novos passaram**: cinco casos funcionais por HTTP, seis casos estruturais atravessando os componentes e PostgreSQL, além de um caso estrutural de autorização por HTTP. A suíte Pytest completa registrou **120 testes aprovados, dois avisos e duração de 14,15 segundos**. O job de lint geral apresentou **198 apontamentos**, por isso não considero o pipeline inteiro aprovado.
 
-**Ajustes:** inclusão obrigatória de rastreabilidade, distinção entre contrato e implementação e proibição de resultados inventados. 
+A principal diferença foi a **diversidade dos comportamentos explorados**. O primeiro prompt produziu testes mais próximos do contrato e suas validações; o segundo alcançou caminhos de execução e efeitos transacionais que não estavam detalhados no OpenAPI. No entanto, o segundo também recebeu **mais informações** (código-fonte). Portanto, não é possível concluir que apenas o tipo de prompt causou essa diferença.
 
-**Evidência de execução:** seis testes estruturais novos (E01, E02, E03, E04, E06 e E07) passaram com PostgreSQL/Testcontainers no GitHub Actions do NexoPsi; a suíte completa registrou 114 aprovados, 2 avisos e 15,66 s. Os cinco casos funcionais foram verificados estaticamente no contrato, mas ainda não executados por HTTP. O job de lint geral falhou com 198 apontamentos; não houve medição de cobertura de código. Relatório: https://github.com/TiagoAlves14/genai-testes-integracao-rest/blob/main/docs/relatorio-validacao.md .
+Durante a atividade, ajustei as instruções para exigir rastreabilidade das expectativas, impedir a invenção de campos ou regras, diferenciar código de documentação e obrigar evidências antes de afirmar aprovação. Também ampliei a validação: os primeiros casos funcionais haviam sido apenas conferidos estaticamente e depois foram executados via HTTP; o caso de autorização foi acrescentado e executado.
 
-**Repositório:** https://github.com/TiagoAlves14/genai-testes-integracao-rest
+Os testes foram executados com **dados sintéticos**. A autenticação HTTP utilizou identidade simulada, e os testes estruturais utilizaram PostgreSQL real via Testcontainers. Não medi percentual de cobertura de código nem executei o frontend/gateway de ponta a ponta.
 
-**Referências:** Unidades I, II e III do material de testes de software com GenAI (UFG/AKCIT).
+Repositório público dos artefatos: https://github.com/TiagoAlves14/genai-testes-integracao-rest
+
+**Referências:** UFG/AKCIT, Unidade II (partição de equivalência e análise de valor-limite) e Unidade III (§§3.1.1 e 3.5–3.7, técnicas de prompt e testes de integração REST).
