@@ -18,7 +18,6 @@ Experimento acadêmico de geração, execução e avaliação de testes de integ
 - [Prompt 2 — estrutural](prompts/02-estrutural.md)
 - [Casos funcionais](tests/casos-funcionais.json)
 - [Casos estruturais](tests/casos-estruturais.json)
-- [Postagem preparada para o fórum](forum/postagem.md)
 - [Execução comprovada do GitHub Actions](https://github.com/TiagoAlves14/NexoPsi/actions/runs/39000265874) — requer acesso autorizado ao NexoPsi
 - [PR privado com código executável](https://github.com/TiagoAlves14/NexoPsi/pull/1) — não integrado à main
 
